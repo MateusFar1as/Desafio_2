@@ -1,0 +1,22 @@
+services:
+  app:
+    build: ./app
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=mysql://user:pass@db/adventure
+
+  db:
+    image: mariadb:11.5.2
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: adventure
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pass
+    volumes:
+      - ./db/adventure.sql:/docker-entrypoint-initdb.d/adventure.sql
+    ports:
+      - "3306:3306"
